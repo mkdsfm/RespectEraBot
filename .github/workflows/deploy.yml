@@ -42,7 +42,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd /path/to/your/project
+            cd /home/deployer3/projects/telegram-bot23
             git pull origin main
             docker-compose down
             docker-compose up -d
