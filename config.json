@@ -1,15 +1,14 @@
 {
-    "GENERAL_COMPLIMENTS": [
-      "Ты – настоящий гуру кода!",
-      "Без тебя наш проект не был бы таким крутым!"
-    ],
-    "PERSONAL_COMPLIMENTS": {
-      "@sdf": [
-        "{first_name}, ты – настоящий гуру кода!",
-        "{first_name}, ты вдохновляешь своей работой!",
-        "{first_name}, dsfdsfdsfdsf",
-        "{first_name}, asdasdasda adsdas das dasdasd"
-      ]
-    }
+  "GENERAL_COMPLIMENTS": [
+    "Ты – настоящий гуру кода!",
+    "Без тебя наш проект не был бы таким крутым!"
+  ],
+  "PERSONAL_COMPLIMENTS": {
+    "@sdf": [
+      "{first_name}, ты – настоящий гуру кода!",
+      "{first_name}, ты вдохновляешь своей работой!",
+      "{first_name}, dsfdsfdsfdsf",
+      "{first_name}, asdasdasda adsdas das dasdasd"
+    ]
   }
-  
+}

@@ -4,7 +4,5 @@ services:
     build: .
     environment:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
-    volumes:
-      - ./config.json:/app/config.json  # Монтируем локальный config.json в контейнер
     restart: always
 
