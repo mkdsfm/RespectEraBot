@@ -27,9 +27,7 @@ jobs:
     deploy:
         needs: publish
         name: deploy image
-        env:
-          IMAGE_REF: ${{ steps.meta.outputs.tags }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
         runs-on: ubuntu-latest
 
         steps:
@@ -41,6 +39,9 @@ jobs:
             echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
             ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
         - name: connect and pull
+          env:
+            IMAGE_REF: ${{ steps.meta.outputs.tags }}
+            TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull && docker compose up -d && exit"
         - name: cleanup
           run: rm -rf ~/.ssh
