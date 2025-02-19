@@ -23,16 +23,28 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
+# Функция для проверки, является ли имя женским
+def is_feminine(name: str) -> bool:
+    # Приводим имя к нижнему регистру и проверяем на окончание
+    name = name.lower()
+    feminine_endings = [
+        'а', 'я', 'ева', 'ина', 'слава', 'ля', 'вика', 'сиса', 'цка',  # Русский
+        'a', 'ya', 'eva', 'ina', 'slava', 'lya', 'vika', 'sisa', 'ya', 'tska'  # Транслит
+    ]
+    return any(name.endswith(ending) for ending in feminine_endings)
+
 # Обработчик команды /compliment
-@dp.message(Command("compliment"))
+@dp.message()
 async def send_compliment(message: types.Message):
     username = message.from_user.username
-    first_name = message.from_user.first_name or "Друг"
+    first_name = message.from_user.first_name or "Товарищ"
+    if is_feminine(first_name) and f"@{username}" not in PERSONAL_COMPLIMENTS:
+        return  # Пропустить отправку комплимента для этих пользователей
     
     if username and f"@{username}" in PERSONAL_COMPLIMENTS:
         compliment = random.choice(PERSONAL_COMPLIMENTS[f"@{username}"]).format(first_name=first_name)
     else:
-        compliment = random.choice(GENERAL_COMPLIMENTS)
+        compliment = random.choice(GENERAL_COMPLIMENTS).format(first_name=first_name)
     
     await message.answer(compliment)
 
