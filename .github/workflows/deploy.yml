@@ -25,7 +25,6 @@ jobs:
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-          docker context create remote --docker host=ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -45,7 +44,12 @@ jobs:
           IMAGE_REF: ${{ steps.meta.outputs.tags }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
-          docker compose -f docker-compose.yml up -d
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd /home/deployer3/projects/telegram-bot23  # Указать путь к проекту на сервере
+            docker compose pull  # Обновление образа
+            docker compose up -d --remove-orphans  # Запуск контейнера
+            docker image prune -f  # Очистка старых образов
+          EOF
 
       - name: cleanup
         run: rm -rf ~/.ssh
