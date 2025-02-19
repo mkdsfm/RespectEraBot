@@ -1,9 +1,8 @@
 
 services:
   bot:
-    image: ${IMAGE_REF}
-    container_name: bot23
-    restart: always
+    build: .
     environment:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+    restart: always
 
