@@ -2,7 +2,7 @@
 services:
   bot:
     build: .
-    environment:
-      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+    env_file:
+      - .env
     restart: always
 
