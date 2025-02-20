@@ -40,16 +40,16 @@ def is_feminine(name: str) -> bool:
     return any(name.endswith(ending) for ending in feminine_endings)
 
 # Обработчик команды /compliment
-@dp.message()
+@dp.message(Command("getrespect"))
 async def send_compliment(message: types.Message):
     username = message.from_user.username
     first_name = message.from_user.first_name or "Товарищ"
 
-    if is_feminine(first_name) and f"@{username}" not in PERSONAL_COMPLIMENTS:
-            return  # Пропустить отправку комплимента для этих пользователей
+    # if is_feminine(first_name) and f"@{username}" not in PERSONAL_COMPLIMENTS:
+    #        return  # Пропустить отправку комплимента для этих пользователей
     
     if random.choice([True, False]):    
-        if username and f"@{username}" in PERSONAL_COMPLIMENTS:
+        if "@{username}" in PERSONAL_COMPLIMENTS:
             compliment = random.choice(PERSONAL_COMPLIMENTS[f"@{username}"]).format(first_name=first_name)
         else:
             compliment = random.choice(GENERAL_COMPLIMENTS).format(first_name=first_name)
