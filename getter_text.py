@@ -24,7 +24,7 @@ giga = GigaChat(
 PROMPT = """Составь комплимент-респект в виде дифирамбов для {first_name} на основе следующего описания: {description}. 
 Комплимент-респект должен быть подчеркивающим профессионализм в несколько предложений. Обращайся на ты."""
 
-async def get_ai_response(username, first_name):
+async def get_ai_response_async(username, first_name):
     """Отправляет комплимент, сгенерированный Гига-чат"""
     description = PERSON_DESCRIPTIONS.get(f"@{username}", PERSON_DESCRIPTIONS[DEFAULT_NAME])
     prompt = PROMPT.format(first_name=first_name, description=description)
@@ -32,5 +32,14 @@ async def get_ai_response(username, first_name):
     response = giga.chat(prompt)
     return response.choices[0].message.content + " (c) ai"
 
-async def get_random_compliment(first_name):
+async def get_random_compliment_async(first_name):
     return random.choice(COMPLIMENTS).format(first_name=first_name)
+
+
+async def get_random_text_async(username, first_name):
+    choice = random.choice([True, False])
+
+    if f"@{username}" in PERSON_DESCRIPTIONS or choice:
+        return await get_ai_response_async(username, first_name)
+    else:
+        return await get_random_compliment_async(first_name)

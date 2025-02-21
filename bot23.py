@@ -28,13 +28,10 @@ async def send_compliment(message: types.Message):
     username = message.from_user.username
     first_name = message.from_user.first_name or "Товарищ"
 
-    choice = random.choice([TEXT_COMPLIMENT, GPT_COMPLIMENT, IMAGE_RESPONSE])
+    choice = random.choice([TEXT_COMPLIMENT, TEXT_COMPLIMENT, IMAGE_RESPONSE])
     
     if choice == TEXT_COMPLIMENT:
-        compliment = await getter_text.get_random_compliment(first_name)
-        await message.answer(compliment)
-    elif choice == GPT_COMPLIMENT:
-        compliment = await getter_text.get_ai_response(username, first_name)
+        compliment = await getter_text.get_random_text_async(username, first_name)
         await message.answer(compliment)
     else:
         photo = await getter_photo.get_random_photo_async()
