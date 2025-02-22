@@ -1,5 +1,4 @@
 import logging
-import random
 import asyncio
 import os
 from aiogram import Bot, Dispatcher, types
@@ -28,14 +27,10 @@ async def send_compliment(message: types.Message):
     username = message.from_user.username
     first_name = message.from_user.first_name or "Товарищ"
 
-    choice = random.choice([TEXT_COMPLIMENT, TEXT_COMPLIMENT, IMAGE_RESPONSE])
-    
-    if choice == TEXT_COMPLIMENT:
-        compliment = await getter_text.get_random_text_async(username, first_name)
-        await message.answer(compliment)
-    else:
-        photo = await getter_photo.get_random_photo_async()
-        await message.answer_photo(photo=photo)
+    compliment = await getter_text.get_random_text_async(username, first_name)
+    photo_path = await getter_photo.get_random_photo_async()
+    await message.answer_photo(photo=photo_path, caption=compliment)
+       
 
 # Запуск бота
 async def main():

@@ -2,6 +2,9 @@ import json
 import random
 from gigachat import GigaChat
 import os
+from gigachat.models import Chat, Messages, MessagesRole
+
+AI_AUTH_KEY = os.getenv("AI_AUTH_KEY")
 
 # Загрузка настроек из config.json
 with open("config.json", "r", encoding="utf-8") as f:
@@ -12,8 +15,6 @@ COMPLIMENTS = config.get("COMPLIMENTS", [])
 PERSON_DESCRIPTIONS = config.get("PERSON_DESCRIPTIONS", {})
 DEFAULT_NAME = "default"
 
-AI_AUTH_KEY = os.getenv("AI_AUTH_KEY")
-
 giga = GigaChat(
    credentials=AI_AUTH_KEY,
    scope="GIGACHAT_API_PERS",
@@ -22,14 +23,25 @@ giga = GigaChat(
 )
 
 PROMPT = """Составь комплимент-респект в виде дифирамбов для {first_name} на основе следующего описания: {description}. 
-Комплимент-респект должен быть подчеркивающим профессионализм в несколько предложений. Обращайся на ты."""
+Комплимент-респект должен быть подчеркивающим профессионализм в 4 предложения. Обращайся на ты."""
 
 async def get_ai_response_async(username, first_name):
     """Отправляет комплимент, сгенерированный Гига-чат"""
     description = PERSON_DESCRIPTIONS.get(f"@{username}", PERSON_DESCRIPTIONS[DEFAULT_NAME])
     prompt = PROMPT.format(first_name=first_name, description=description)
 
-    response = giga.chat(prompt)
+    payload = Chat(
+        messages=[
+            Messages(
+                role=MessagesRole.USER,
+                content=prompt
+            )
+        ],
+        temperature=0.7,
+        max_tokens=100,
+    )
+
+    response = giga.chat(payload)
     return response.choices[0].message.content + " (c) ai"
 
 async def get_random_compliment_async(first_name):
