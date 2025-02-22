@@ -22,13 +22,13 @@ giga = GigaChat(
    ca_bundle_file="russian_trusted_root_ca.cer"
 )
 
-PROMPT = """Составь комплимент-респект в виде дифирамбов для {first_name} на основе следующего описания: {description}. 
-Комплимент-респект должен быть подчеркивающим профессионализм в 4 предложения. Обращайся на ты."""
+PROMPT = """Составь комплимент-респект в виде дифирамбов на основе следующего описания: {description}. 
+Комплимент-респект должен быть в 4-5 предложений с разными эмоджи в контексте. Обращайся на ты."""
 
-async def get_ai_response_async(username, first_name):
+async def get_ai_response_async(username):
     """Отправляет комплимент, сгенерированный Гига-чат"""
     description = PERSON_DESCRIPTIONS.get(f"@{username}", PERSON_DESCRIPTIONS[DEFAULT_NAME])
-    prompt = PROMPT.format(first_name=first_name, description=description)
+    prompt = PROMPT.format(description=description)
 
     payload = Chat(
         messages=[
@@ -38,7 +38,7 @@ async def get_ai_response_async(username, first_name):
             )
         ],
         temperature=0.7,
-        max_tokens=100,
+        max_tokens=150,
     )
 
     response = giga.chat(payload)

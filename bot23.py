@@ -3,8 +3,10 @@ import asyncio
 import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
+from aiogram.types import FSInputFile
 import getter_text
 import getter_photo
+import getter_audio
 
 # Конфигурация
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -27,9 +29,17 @@ async def send_compliment(message: types.Message):
     username = message.from_user.username
     first_name = message.from_user.first_name or "Товарищ"
 
-    compliment = await getter_text.get_random_text_async(username, first_name)
+    compliment = await getter_text.get_random_text_async(first_name)
+
     photo_path = await getter_photo.get_random_photo_async()
-    await message.answer_photo(photo=photo_path, caption=compliment)
+    photo = FSInputFile(photo_path)
+
+    voice_path = getter_audio.get_audio(compliment)
+    voice = FSInputFile(voice_path)
+
+    await message.answer_photo(photo=photo, caption=compliment)
+    await message.answer_audio(audio=voice)
+    os.remove(voice_path)
        
 
 # Запуск бота
