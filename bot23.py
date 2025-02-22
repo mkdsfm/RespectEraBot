@@ -29,7 +29,7 @@ async def send_compliment(message: types.Message):
     username = message.from_user.username
     first_name = message.from_user.first_name or "Товарищ"
 
-    compliment = await getter_text.get_random_text_async(first_name)
+    compliment = await getter_text.get_random_text_async(username, first_name)
 
     photo_path = await getter_photo.get_random_photo_async()
     photo = FSInputFile(photo_path)

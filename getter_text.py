@@ -52,6 +52,6 @@ async def get_random_text_async(username, first_name):
     choice = random.choice([True, False])
 
     if f"@{username}" in PERSON_DESCRIPTIONS or choice:
-        return await get_ai_response_async(username, first_name)
+        return await get_ai_response_async(username)
     else:
         return await get_random_compliment_async(first_name)
