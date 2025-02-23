@@ -1,8 +1,7 @@
 from gtts import gTTS
 import os
 
-def get_audio(text):
+def get_audio(text, filename):
     tts = gTTS(text=text, lang='ru')
-    filename = 'output.mp3'
     tts.save(filename)
     return filename

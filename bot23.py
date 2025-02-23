@@ -7,6 +7,7 @@ from aiogram.types import FSInputFile
 import getter_text
 import getter_photo
 import getter_audio
+from datetime import datetime
 
 # Конфигурация
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -34,9 +35,8 @@ async def send_compliment(message: types.Message):
     photo_path = await getter_photo.get_random_photo_async()
     photo = FSInputFile(photo_path)
 
-    voice_path = getter_audio.get_audio(compliment)
+    voice_path = getter_audio.get_audio(text=compliment, filename=f"{username}_{datetime.now().timestamp()}.mp3")
     voice = FSInputFile(voice_path)
-
     await message.answer_photo(photo=photo, caption=compliment)
     await message.answer_audio(audio=voice)
     os.remove(voice_path)
