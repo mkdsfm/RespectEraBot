@@ -24,11 +24,16 @@ TEXT_COMPLIMENT = 0
 GPT_COMPLIMENT = 1
 IMAGE_RESPONSE = 2
 
+LOADING_DIR = "animations/loading-thinking.mp4"
+
 @dp.message(Command("getrespect"))
 async def send_compliment(message: types.Message):
     """Обработчик команды /getrespect."""
     username = message.from_user.username
     first_name = message.from_user.first_name or "Товарищ"
+
+    loading = FSInputFile(LOADING_DIR)
+    loading_msg = await message.answer_animation(loading)
 
     compliment = await getter_text.get_random_text_async(username, first_name)
 
@@ -37,6 +42,9 @@ async def send_compliment(message: types.Message):
 
     voice_path = getter_audio.get_audio(text=compliment, filename=f"{username}_{datetime.now().timestamp()}.mp3")
     voice = FSInputFile(voice_path)
+
+    await loading_msg.delete()
+
     await message.answer_photo(photo=photo, caption=compliment)
     await message.answer_audio(audio=voice)
     os.remove(voice_path)
