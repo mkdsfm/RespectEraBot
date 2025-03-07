@@ -1,19 +1,8 @@
-import json
-import random
 from gigachat import GigaChat
 import os
 from gigachat.models import Chat, Messages, MessagesRole
 
 AI_AUTH_KEY = os.getenv("AI_AUTH_KEY")
-
-# Загрузка настроек из config.json
-with open("config.json", "r", encoding="utf-8") as f:
-    config = json.load(f)
-
-COMPLIMENTS = config.get("COMPLIMENTS", [])
-
-PERSON_DESCRIPTIONS = config.get("PERSON_DESCRIPTIONS", {})
-DEFAULT_NAME = "default"
 
 giga = GigaChat(
    credentials=AI_AUTH_KEY,
@@ -22,37 +11,41 @@ giga = GigaChat(
    ca_bundle_file="russian_trusted_root_ca.cer"
 )
 
-PROMPT = """Напиши комплимент-респект на основе следующего описания: {description} (в ** указано для кого комплимент).
- Комлимент-респект должен состоять из 4-6 предложений, добавь много эмоджи по всему тексту.
- Обращайся по имени."""
+SYSTEM_PROMPT = """Ты создаёшь развернутые, искренние комплименты на основе входных данных.  
+1. Во входных данных будет роль человка (в формате *роль*) и описание качеств.  
+2. Обращайся по имени, делай комплимент персональным.  
+3. Используй яркие эпитеты, метафоры и примеры из описания.  
+4. Делай комплимент щедрым, вдохновляющим и развернутым.  
+5. Обязательно добавляй эмоджи для выразительности. 😊  
+Пример:  
+Вход: **Анна**, лучший руководитель, поддерживает команду.  
+Ответ: Анна, ты — не просто руководитель, ты — настоящий лидер! 🌟 Твоя способность поддерживать и вдохновлять команду просто восхищает. 💖 С тобой каждый чувствует себя важным и ценным, а это дорогого стоит. 💪 Ты умеешь находить подход к каждому, мотивировать на новые свершения и заряжать энергией даже в самые сложные дни. 🚀 Твоя мудрость, доброта и профессионализм делают тебя незаменимой! 🌈 Спасибо за то, что ты есть у нас — с тобой мы можем горы свернуть! 😊 
 
-async def get_ai_response_async(username):
-    """Отправляет комплимент, сгенерированный Гига-чат"""
-    description = PERSON_DESCRIPTIONS.get(f"@{username}", PERSON_DESCRIPTIONS[DEFAULT_NAME])
-    prompt = PROMPT.format(description=description)
+Теперь твоя очередь! Создай запоминающийся комплимент. 😉"""
 
-    payload = Chat(
+payload = Chat(
         messages=[
             Messages(
-                role=MessagesRole.USER,
-                content=prompt
+                role=MessagesRole.SYSTEM,
+                content=SYSTEM_PROMPT
             )
         ],
-        temperature=0.7,
-        max_tokens=150,
+        temperature=0.7
     )
 
+async def get_ai_response_async(description):
+    """Отправляет комплимент, сгенерированный Гига-чат"""
+
+    payload.messages.append(
+            Messages(
+                role=MessagesRole.USER,
+                content=description
+            ))
+    
     response = giga.chat(payload)
     return response.choices[0].message.content + " (c) ai"
 
-async def get_random_compliment_async(first_name):
-    return random.choice(COMPLIMENTS).format(first_name=first_name)
 
+async def get_random_text_async(description):
 
-async def get_random_text_async(username, first_name):
-    choice = random.choice([True, False])
-
-    if f"@{username}" in PERSON_DESCRIPTIONS or choice:
-        return await get_ai_response_async(username)
-    else:
-        return await get_random_compliment_async(first_name)
+    return await get_ai_response_async(description)
