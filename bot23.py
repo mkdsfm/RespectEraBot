@@ -45,9 +45,11 @@ async def send_compliment(message: types.Message):
     if person_info["tag"] == "ManDay":
         loading_tag = getter_loading.LoadingTag.ManDay
         image_tag = getter_photo.ImageTag.ManDay
+        audio_tag = getter_audio.AudioTag.ManDay
     if person_info["tag"] == "WomanDay":
         loading_tag = getter_loading.LoadingTag.WomanDay
         image_tag = getter_photo.ImageTag.WomanDay
+        audio_tag = getter_audio.AudioTag.WomanDay
 
     loading_path = await getter_loading.get_random_loading(loading_tag)
     loading = FSInputFile(loading_path)
@@ -56,10 +58,13 @@ async def send_compliment(message: types.Message):
 
     compliment = await getter_text.get_random_text_async(description)
 
+    logging.info(f"username: {username}")
+    logging.info(f"compliment: {compliment}")
+
     photo_path = await getter_photo.get_random_photo_async(image_tag)
     photo = FSInputFile(photo_path)
 
-    voice_path = getter_audio.get_audio(text=compliment, filename=f"{username}_{datetime.now().timestamp()}.mp3")
+    voice_path = getter_audio.get_audio(text=compliment, filename=f"{username}_{datetime.now().timestamp()}.mp3", tag = audio_tag)
     voice = FSInputFile(voice_path)
 
     await loading_msg.delete()
